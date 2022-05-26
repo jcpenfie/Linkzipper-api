@@ -21,4 +21,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/register',[AuthController::class, 'register']);
 Route::post('/login',[AuthController::class, 'login']);
-Route::post('/getUserLogin',[AuthController::class, 'getUserLogin'])->middleware('auth:sanctum'); //protegido para que no entren usuarios no autenticados
+Route::get('/getUserLogin',[AuthController::class, 'getUserLogin'])->middleware('auth:sanctum'); //protegido para que no entren usuarios no autenticados
