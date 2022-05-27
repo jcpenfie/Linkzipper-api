@@ -9,16 +9,28 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function register(Request $request){
-        $validateData = $request->validate([
-            'user' => 'required|string|max:255',
-            'email' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|max:8'
-        ]);
+    public function register(Request $request)
+    {
+
+
+        try {
+            $validateData = $request->validate([
+                'userName' => 'required|string|unique:users|max:255',
+                'email' => 'required|string|max:255|unique:users',
+                'password' => 'required|string|max:8'
+            ], [
+                'email.unique' => 'Email already registered'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'The user name or email has already been taken.',
+                'error_type' => '422'
+            ]);
+        }
 
         $user = User::create([
-            'userName' => $validateData['user'],
-            'showName' => $validateData['user'],
+            'userName' => $validateData['userName'],
+            'showName' => $validateData['userName'],
             'email' => $validateData['email'],
             'password' => Hash::make($validateData['password']),
             'totalLikes' => 0,
@@ -32,29 +44,40 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'message' => 'Good',
             'access_token' => $token,
-            'token_type'=> 'Bearer'
-        ],200);
+            'token_type' => 'Bearer'
+        ], 200);
     }
 
-    public function login(Request $request){
-        if(!Auth::attempt($request->only('email','password'))){
+    public function login(Request $request)
+    {
+        // if (!Auth::attempt($request->only('email', 'password'))) {
+        //     return response()->json([
+        //         'message' => 'Invalid login details'
+        //     ], 401);
+        // }
+
+        try {
+            $user = User::where('email', $request['email'])->firstOrFail();
+
+        } catch (\Throwable $th) {
             return response()->json([
-                'message' =>'Invalid login details'
-            ],401);
+                'message' => 'The user email or password are not registered in the database',
+                'error_type' => '422'
+            ]);
         }
-
-        $user = User::where('email', $request['email'])->firstOrFail();
-
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'message' => 'Good',
             'access_token' => $token,
-            'token_type'=> 'Bearer'
-        ],200);
+            'token_type' => 'Bearer'
+        ], 200);
     }
 
-    public function getUserLogin(Request $request){
+    public function getUserLogin(Request $request)
+    {
         return $request->user();
     }
 }
