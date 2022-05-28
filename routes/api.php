@@ -27,7 +27,8 @@ Route::get('/getUserLogin',[AuthController::class, 'getUserLogin'])->middleware(
 
 // explore, search, profile
 Route::get('/explore',[ExploreController::class, 'explore']); 
-Route::get('/search',[ExploreController::class, 'search']); 
+Route::post('/search',[ExploreController::class, 'search']); //devuelve los datos del usario que ha buscado
+Route::post('/searchName',[ExploreController::class, 'searchName']); //solo devuelve los nombres 
 Route::get('/profile',[ExploreController::class, 'profile']); 
 
 //dar/quitar megusta

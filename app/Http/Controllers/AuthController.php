@@ -25,14 +25,13 @@ class AuthController extends Controller
                 'error_type' => '422'
             ]);
         }
-$publicAccount = rand(0,1);
         $user = User::create([
-            'userName' => $validateData['userName'],
+            'userName' => strtolower($validateData['userName']),
             'showName' => $validateData['userName'],
-            'email' => $validateData['email'],
+            'email' => strtolower($validateData['email']),
             'password' => Hash::make($validateData['password']),
             'totalLikes' => 0,
-            'publicAccount' => $publicAccount,
+            'publicAccount' => 1,
             'theme' => 'White',
             'description' => '',
             'profileImg' => '/profile/default.png',
