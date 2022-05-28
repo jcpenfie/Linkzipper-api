@@ -8,6 +8,6 @@ class ExploreController extends Controller
 {
     public function explore()
     {
-        return User::where('publicAccount', '=', 1)->get();
+        return User::where('publicAccount', 1)->orderBy('totalLikes', 'DESC')->get();
     }
 }
