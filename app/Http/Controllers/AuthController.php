@@ -11,8 +11,6 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-
-
         try {
             $validateData = $request->validate([
                 'userName' => 'required|string|unique:users|max:255',
@@ -27,14 +25,14 @@ class AuthController extends Controller
                 'error_type' => '422'
             ]);
         }
-
+$publicAccount = rand(0,1);
         $user = User::create([
             'userName' => $validateData['userName'],
             'showName' => $validateData['userName'],
             'email' => $validateData['email'],
             'password' => Hash::make($validateData['password']),
             'totalLikes' => 0,
-            'publicAccount' => true,
+            'publicAccount' => $publicAccount,
             'theme' => 'White',
             'description' => '',
             'profileImg' => '/profile/default.png',
