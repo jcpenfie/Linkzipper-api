@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\LinkController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 /*
@@ -31,6 +33,16 @@ Route::post('/search',[ExploreController::class, 'search']); //devuelve los dato
 Route::post('/searchName',[ExploreController::class, 'searchName']); //solo devuelve los nombres 
 Route::get('/profile',[ExploreController::class, 'profile']); 
 
-//dar/quitar megusta
+//dar,quitar y listar megustas 
 Route::post('/like',[LikeController::class, 'like']); 
-Route::post('/dislike',[LikeController::class, 'dislike']); 
+Route::post('/dislike',[LikeController::class, 'dislike']);
+Route::post('/likes',[LikeController::class, 'show']); 
+
+//Formulario para modificar los datos del perfil
+Route::put('/panel',[UserController::class, 'panel']);
+
+//links (crud)
+Route::put('/link/create',[LinkController::class, 'create']);
+Route::post('/link/show',[LinkController::class, 'show']);
+Route::put('/link/update',[LinkController::class, 'update']);
+Route::delete('/link/delete',[LinkController::class, 'delete']);

@@ -49,15 +49,8 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // if (!Auth::attempt($request->only('email', 'password'))) {
-        //     return response()->json([
-        //         'message' => 'Invalid login details'
-        //     ], 401);
-        // }
-
         try {
             $user = User::where('email', $request['email'])->firstOrFail();
-
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'The user email or password are not registered in the database',
