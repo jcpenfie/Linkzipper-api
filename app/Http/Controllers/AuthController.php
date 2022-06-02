@@ -49,21 +49,40 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+
         try {
-            $user = User::where('email', $request['email'])->firstOrFail();
+            $validateData = $request->validate([
+                'email' => 'required',
+                'password' => 'required'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Validation Fails',
+                'error_type' => '422'
+            ]);
+        }
+
+        try {
+            if (Hash::check('plain-text', $validateData['password'])) {//sdsdafdsdddddddddddddddddddddddddddddddddddddddddddddddddd
+                $user = User::where('email', $validateData['email'])->firstOrFail(); 
+                $token = $user->createToken('auth_token')->plainTextToken;
+
+                return response()->json([
+                    'message' => 'Good',
+                    'access_token' => $token,
+                    'token_type' => 'Bearer'
+                ], 200);
+            }
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'The user email or password are not registered in the database',
                 'error_type' => '422'
             ]);
         }
-        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Good',
-            'access_token' => $token,
-            'token_type' => 'Bearer'
-        ], 200);
+                    'message' => 'Hash check fails',
+                ]);
     }
 
     public function getUserLogin(Request $request)

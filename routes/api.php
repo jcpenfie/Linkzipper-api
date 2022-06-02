@@ -45,4 +45,4 @@ Route::put('/panel',[UserController::class, 'panel']);
 Route::put('/link/create',[LinkController::class, 'create']);
 Route::post('/link/show',[LinkController::class, 'show']);
 Route::put('/link/update',[LinkController::class, 'update']);
-Route::delete('/link/delete',[LinkController::class, 'delete']);
+Route::delete('/link/{id}',[LinkController::class, 'delete']);

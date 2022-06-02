@@ -58,29 +58,6 @@ class LinkController extends Controller
                 'title' => 'required',
                 'link' => 'required',
                 'logo' => 'required',
-                'idUser' => 'required',
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'The validation fail',
-            ]);
-        }
-
-        Link::where('idUser', $validateData['idUser'])->update(array(
-            'title' => $validateData['title'],
-            'link' => $validateData['link'],
-            'logo' => $validateData['logo'],
-            'idUser' => $validateData['idUser'],
-        ));
-
-        return response()->json([
-            'message' => 'Good, link updated',
-        ], 200);
-    }
-
-    public function delete(Request $request){
-        try {
-            $validateData = $request->validate([
                 'idLink' => 'required',
             ]);
         } catch (\Throwable $th) {
@@ -89,7 +66,20 @@ class LinkController extends Controller
             ]);
         }
 
-        Link::where('id', $validateData['idLink'])->delete();
+        Link::where('id', $validateData['idLink'])->update(array(
+            'title' => $validateData['title'],
+            'link' => $validateData['link'],
+            'logo' => $validateData['logo'],
+        ));
+
+        return response()->json([
+            'message' => 'Good, link updated',
+        ], 200);
+    }
+
+    public function delete($idLink){
+        
+        Link::where('id', $idLink)->delete();
 
         return response()->json([
             'message' => 'Good, link removed',
