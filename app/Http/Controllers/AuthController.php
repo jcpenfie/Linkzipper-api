@@ -63,8 +63,8 @@ class AuthController extends Controller
         }
 
         try {
-            if (Hash::check('plain-text', $validateData['password'])) {//sdsdafdsdddddddddddddddddddddddddddddddddddddddddddddddddd
-                $user = User::where('email', $validateData['email'])->firstOrFail(); 
+            $user = User::where('email', $validateData['email'])->firstOrFail(); 
+            if (Hash::check($validateData['password'], $user->password)) {
                 $token = $user->createToken('auth_token')->plainTextToken;
 
                 return response()->json([
@@ -81,7 +81,7 @@ class AuthController extends Controller
         }
 
         return response()->json([
-                    'message' => 'Hash check fails',
+                    'message' => 'Incorrect password',
                 ]);
     }
 
