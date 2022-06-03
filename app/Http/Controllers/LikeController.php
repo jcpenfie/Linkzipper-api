@@ -28,7 +28,7 @@ class LikeController extends Controller
             'idUserLiked' => $validateData['idUserLiked'],
         ]);
 
-        DB::table('users')->where('id', $validateData['idUser'])->increment('totalLikes');
+        DB::table('users')->where('id', $validateData['idUserLiked'])->increment('totalLikes');
 
         return response()->json([
             'message' => 'Like Added',
@@ -40,7 +40,7 @@ class LikeController extends Controller
         try {
             $validateData = $request->validate([
                 'idUser' => 'required',
-                'idLink' => 'required',
+                'idLike' => 'required',
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -48,7 +48,7 @@ class LikeController extends Controller
             ]);
         }
 
-        Like::where('id', $validateData['idLink'])->delete();
+        Like::where('id', $validateData['idLike'])->delete();
         DB::table('users')->where('id', $validateData['idUser'])->decrement('totalLikes');
 
         return response()->json([
@@ -68,11 +68,14 @@ class LikeController extends Controller
         }
         
         $likes = Like::where('idUser', $validateData['idUser'])->get();
-        DB::table('users')->where('id', $validateData['idUser'])->decrement('totalLikes');
+        
+        foreach ($likes as $like) {
+            $likesArray []= User::where('id', "like" ,$like->idUserLiked)->get();
+        }
 
         return response()->json([
             'message' => 'Likes showed',
-            'likes' => $likes
+            'likes' => $likesArray
         ], 200);
     }
 }

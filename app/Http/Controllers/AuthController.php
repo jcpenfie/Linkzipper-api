@@ -63,7 +63,7 @@ class AuthController extends Controller
         }
 
         try {
-            $user = User::where('email', $validateData['email'])->firstOrFail(); 
+            $user = User::where('email', $validateData['email'])->firstOrFail();
             if (Hash::check($validateData['password'], $user->password)) {
                 $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -81,8 +81,8 @@ class AuthController extends Controller
         }
 
         return response()->json([
-                    'message' => 'Incorrect password',
-                ]);
+            'message' => 'Incorrect password',
+        ]);
     }
 
     public function getUserLogin(Request $request)
