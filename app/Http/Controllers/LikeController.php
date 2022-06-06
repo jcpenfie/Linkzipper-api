@@ -66,16 +66,26 @@ class LikeController extends Controller
                 'message' => 'The validation fail',
             ]);
         }
-        
-        $likes = Like::where('idUser', $validateData['idUser'])->get();
-        
-        foreach ($likes as $like) {
-            $likesArray []= User::where('id', "like" ,$like->idUserLiked)->get();
-        }
 
-        return response()->json([
-            'message' => 'Likes showed',
-            'likes' => $likesArray
-        ], 200);
+        try {
+            $likes = Like::where('idUser', $validateData['idUser'])->get();
+
+            if(count($likes) > 0){
+                foreach ($likes as $like) {
+                    $likesArray[] = User::where('id', "like", $like->idUserLiked)->get();
+                }
+            }else{
+                $likesArray = [];
+            }
+
+            return response()->json([
+                'message' => 'Likes showed',
+                'likes' => $likesArray
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Error to get likes',
+            ]);
+        }
     }
 }
