@@ -47,7 +47,7 @@ class LinkController extends Controller
         $links = Link::where('idUser', $validateData['idUser'])->get();
 
         return response()->json([
-            'message' => 'Good, link created',
+            'message' => 'Good, link listed',
             'links' => $links
         ], 200);
     }
