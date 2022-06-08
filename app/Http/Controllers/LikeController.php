@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 class LikeController extends Controller
 {
+    
+    /////////////////////LIKE/////////////////////////////////////
     public function like(Request $request)
     {
         try {
@@ -35,12 +37,14 @@ class LikeController extends Controller
         ], 200);
     }
 
+
+    /////////////////////DISLIKE/////////////////////////////////////
     public function dislike(Request $request)
     {
         try {
             $validateData = $request->validate([
                 'idUser' => 'required',
-                'idLike' => 'required',
+                'idUserLiked' => 'required',
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -48,13 +52,31 @@ class LikeController extends Controller
             ]);
         }
 
-        Like::where('id', $validateData['idLike'])->delete();
-        DB::table('users')->where('id', $validateData['idUser'])->decrement('totalLikes');
+        try {
+            Like::where('idUserLiked', $validateData['idUserLiked'])->where('idUser', $validateData['idUser'])->delete();
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Error to delete',
+            ]);
+        }
+
+
+        try {
+            DB::table('users')->where('id', $validateData['idUserLiked'])->decrement('totalLikes');
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Error to decrement',
+            ]);
+        }
 
         return response()->json([
             'message' => 'Like Removed',
         ], 200);
     }
+
+
+
+    /////////////////////SHOW/////////////////////////////////////
     public function show(Request $request)
     {
         try {
@@ -68,14 +90,15 @@ class LikeController extends Controller
         }
 
         try {
-            $likes = Like::where('idUser', $validateData['idUser'])->get();
+            $likesCount = Like::where('idUser', $validateData['idUser'])->count();
 
-            if(count($likes) > 0){
+            if ($likesCount != 0) {
+                $likes = Like::where('idUser', $validateData['idUser'])->get();
                 foreach ($likes as $like) {
                     $likesArray[] = User::where('id', "like", $like->idUserLiked)->get();
                 }
-            }else{
-                $likesArray = [];
+            } else {
+                $likesArray = $likesCount;
             }
 
             return response()->json([
