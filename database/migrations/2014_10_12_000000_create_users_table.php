@@ -24,8 +24,8 @@ return new class extends Migration
             $table->boolean('publicAccount');
             $table->string('theme');
             $table->string('description');
-            $table->binary('profileImg');
-            $table->binary('backgroundImg');
+            $table->string('profileImg');
+            $table->string('backgroundImg');
             $table->rememberToken();
             $table->timestamps();
         });

@@ -39,7 +39,8 @@ Route::post('/dislike',[LikeController::class, 'dislike']);
 Route::post('/likes',[LikeController::class, 'show']); 
 
 //Formulario para modificar los datos del perfil
-Route::put('/panel',[UserController::class, 'panel']);
+Route::post('/panel',[UserController::class, 'panel']);
+Route::post('/user/img',[UserController::class, 'img']); //ruta para recoger las imagenes subidas a la api
 
 //links (crud)
 Route::put('/link/create',[LinkController::class, 'create']);

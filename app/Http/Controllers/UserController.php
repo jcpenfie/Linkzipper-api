@@ -18,7 +18,7 @@ class UserController extends Controller
                 'theme' => 'required',
                 'publicAccount' => 'required',
                 'description' => 'required|string',
-                'profileImg' => 'required|',
+                'profileImg' => 'required',
                 'backgroundImg' => 'required',
             ]);
         } catch (\Throwable $th) {
@@ -26,18 +26,56 @@ class UserController extends Controller
                 'message' => 'The validation fail',
             ]);
         }
-        User::where('userName', $validateData['userName'])->update(array(
-            'showName' => $validateData['showName'],
-            'password' => Hash::make($validateData['password']),
-            'publicAccount' => $validateData['publicAccount'],
-            'theme' => $validateData['theme'],
-            'description' => $validateData['description'],
-            'backgroundImg' => $validateData['backgroundImg']
-        ));
+        try {
+            User::where('userName', $validateData['userName'])->update(array(
+                'showName' => $validateData['showName'],
+                'password' => Hash::make($validateData['password']),
+                'publicAccount' => $validateData['publicAccount'],
+                'theme' => $validateData['theme'],
+                'description' => $validateData['description'],
+            ));
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'The update fail',
+            ]);
+        }
 
-        $user = User::where('userName', $validateData['userName']);
-        $user->logo = $request['profileImg'];
-        $user->save();
+        try {
+            if ($request->hasFile('profileImg')) {
+                $completeFileName = $request->file('profileImg')->getClientOriginalName(); //nombre completo de la imagen con extension
+                $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME); // nombre de la imagen sin extension
+                $extenshion = $request->file('profileImg')->getClientOriginalExtension(); //extension solo de la imagen
+                //Nombre final de la imagen: quita todos los posibles espacios por guión bajos que tenga en el nombre, le añade un número random, la hora en milisegundos para que no se repita y la extensión de la imagen
+                $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extenshion;
+    
+                $request->file('profileImg')->move('img/logo', $compPic);
+                User::where('userName', $request->userName)->update(array(
+                    'profileImg' => $compPic,
+                ));
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Fail to update profileImg',
+            ], 200);
+        }
+        try {
+            if ($request->hasFile('backgroundImg')) {
+                $completeFileName = $request->file('backgroundImg')->getClientOriginalName(); //nombre completo de la imagen con extension
+                $fileNameOnly = pathinfo($completeFileName, PATHINFO_FILENAME); // nombre de la imagen sin extension
+                $extenshion = $request->file('backgroundImg')->getClientOriginalExtension(); //extension solo de la imagen
+                //Nombre final de la imagen: quita todos los posibles espacios por guión bajos que tenga en el nombre, le añade un número random, la hora en milisegundos para que no se repita y la extensión de la imagen
+                $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extenshion;
+    
+                $request->file('backgroundImg')->move('img/bg', $compPic);
+                User::where('userName', $request->userName)->update(array(
+                    'backgroundImg' => $compPic,
+                ));
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Fail to update backgroundImg',
+            ], 200);
+        }
 
         return response()->json([
             'message' => 'Good, user updated',
