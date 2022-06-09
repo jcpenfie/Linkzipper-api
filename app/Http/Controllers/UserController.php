@@ -86,12 +86,12 @@ class UserController extends Controller
 
     public function imgProfile($imgName)
     {
-        $path = public_path().'\img\logo\\'.$imgName;
+        $path = public_path().'/img/logo/'.$imgName;
         return Response::download($path);        
     }
     public function imgBg($imgName)
     {
-        $path = public_path().'\img\bg\\'.$imgName;
+        $path = public_path().'/img/bg/'.$imgName;
         return Response::download($path);        
     }
 }
