@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -18,8 +21,6 @@ class UserController extends Controller
                 'theme' => 'required',
                 'publicAccount' => 'required',
                 'description' => 'required|string',
-                'profileImg' => 'required|file',
-                // 'backgroundImg' => 'required',
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -50,7 +51,7 @@ class UserController extends Controller
 
                 $request->file('profileImg')->move('img/logo', $compPic);
                 User::where('userName', $request->userName)->update(array(
-                    'profileImg' => "logo/".$compPic,
+                    'profileImg' => $compPic,
                 ));
             }
         } catch (\Throwable $th) {
@@ -68,7 +69,7 @@ class UserController extends Controller
 
                 $request->file('backgroundImg')->move('img/bg', $compPic);
                 User::where('userName', $request->userName)->update(array(
-                    'backgroundImg' => 'bg/'.$compPic,
+                    'backgroundImg' => $compPic,
                 ));
             }
         } catch (\Throwable $th) {
@@ -80,5 +81,17 @@ class UserController extends Controller
         return response()->json([
             'message' => 'Good, user updated',
         ], 200);
+    }
+
+
+    public function imgProfile($imgName)
+    {
+        $path = public_path().'\img\logo\\'.$imgName;
+        return Response::download($path);        
+    }
+    public function imgBg($imgName)
+    {
+        $path = public_path().'\img\bg\\'.$imgName;
+        return Response::download($path);        
     }
 }

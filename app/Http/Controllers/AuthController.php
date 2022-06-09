@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -13,16 +15,14 @@ class AuthController extends Controller
     {
         try {
             $validateData = $request->validate([
-                'userName' => 'required|string|unique:users|max:255',
-                'email' => 'required|string|max:255|unique:users',
-                'password' => 'required|string|max:8'
-            ], [
-                'email.unique' => 'Email already registered'
+                'userName' => 'required',
+                'email' => 'required',
+                'password' => 'required'
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'The user name or email has already been taken.',
-                'error_type' => '422'
+                'error_type' => '422',
             ]);
         }
         $user = User::create([
@@ -34,11 +34,23 @@ class AuthController extends Controller
             'publicAccount' => 1,
             'theme' => 'White',
             'description' => '',
-            'profileImg' => 'logo/profileInput.png',
-            'backgroundImg' => 'bg/bgInput.png'
+            'profileImg' => 'profileInput.png',
+            'backgroundImg' => 'emptyBg.png'
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
+
+
+
+        //AutoLike al registrase un usuario
+        $userL = User::where('userName',$user->userName)->get();
+
+        Like::create([
+            'idUser' => $userL[0]->id,
+            'idUserLiked' => $userL[0]->id,
+        ]);
+
+        DB::table('users')->where('id', $userL[0]->id)->increment('totalLikes');
 
         return response()->json([
             'message' => 'Good',
