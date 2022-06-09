@@ -18,8 +18,8 @@ class UserController extends Controller
                 'theme' => 'required',
                 'publicAccount' => 'required',
                 'description' => 'required|string',
-                'profileImg' => 'required',
-                'backgroundImg' => 'required',
+                'profileImg' => 'required|file',
+                // 'backgroundImg' => 'required',
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -47,16 +47,16 @@ class UserController extends Controller
                 $extenshion = $request->file('profileImg')->getClientOriginalExtension(); //extension solo de la imagen
                 //Nombre final de la imagen: quita todos los posibles espacios por guión bajos que tenga en el nombre, le añade un número random, la hora en milisegundos para que no se repita y la extensión de la imagen
                 $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extenshion;
-    
+
                 $request->file('profileImg')->move('img/logo', $compPic);
                 User::where('userName', $request->userName)->update(array(
-                    'profileImg' => $compPic,
+                    'profileImg' => "logo/".$compPic,
                 ));
             }
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Fail to update profileImg',
-            ], 200);
+            ]);
         }
         try {
             if ($request->hasFile('backgroundImg')) {
@@ -65,16 +65,16 @@ class UserController extends Controller
                 $extenshion = $request->file('backgroundImg')->getClientOriginalExtension(); //extension solo de la imagen
                 //Nombre final de la imagen: quita todos los posibles espacios por guión bajos que tenga en el nombre, le añade un número random, la hora en milisegundos para que no se repita y la extensión de la imagen
                 $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extenshion;
-    
+
                 $request->file('backgroundImg')->move('img/bg', $compPic);
                 User::where('userName', $request->userName)->update(array(
-                    'backgroundImg' => $compPic,
+                    'backgroundImg' => 'bg/'.$compPic,
                 ));
             }
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Fail to update backgroundImg',
-            ], 200);
+            ]);
         }
 
         return response()->json([

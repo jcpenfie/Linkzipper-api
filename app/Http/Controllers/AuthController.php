@@ -34,8 +34,8 @@ class AuthController extends Controller
             'publicAccount' => 1,
             'theme' => 'White',
             'description' => '',
-            'profileImg' => '/profile/default.png',
-            'backgroundImg' => 'bg/default.png'
+            'profileImg' => 'logo/profileInput.png',
+            'backgroundImg' => 'bg/bgInput.png'
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
