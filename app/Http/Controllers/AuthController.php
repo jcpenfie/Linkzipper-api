@@ -32,7 +32,7 @@ class AuthController extends Controller
             'password' => Hash::make($validateData['password']),
             'totalLikes' => 0,
             'publicAccount' => 1,
-            'theme' => 'White',
+            'theme' => 'white',
             'description' => '',
             'profileImg' => 'profileInput.png',
             'backgroundImg' => 'emptyBg.png'
