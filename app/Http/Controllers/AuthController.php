@@ -33,7 +33,7 @@ class AuthController extends Controller
             'totalLikes' => 0,
             'publicAccount' => 1,
             'theme' => 'white',
-            'description' => '',
+            'description' => ' ',
             'profileImg' => 'profileInput.png',
             'backgroundImg' => 'emptyBg.png'
         ]);

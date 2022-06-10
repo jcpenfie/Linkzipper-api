@@ -20,7 +20,7 @@ class UserController extends Controller
                 'password' => 'required',
                 'theme' => 'required',
                 'publicAccount' => 'required',
-                'description' => 'required|string',
+                'description' => 'string',
             ]);
         } catch (\Throwable $th) {
             return response()->json([
