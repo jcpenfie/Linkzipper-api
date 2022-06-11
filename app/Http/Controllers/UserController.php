@@ -49,12 +49,9 @@ class UserController extends Controller
                 //Nombre final de la imagen: quita todos los posibles espacios por guión bajos que tenga en el nombre, le añade un número random, la hora en milisegundos para que no se repita y la extensión de la imagen
                 $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extenshion;
 
-                $request->file('profileImg')->storeAs('img/logo', $compPic);
-
-                $file = $request->file('profileImg');
-                
+                $request->file('profileImg')->move('img/logo', $compPic);
                 User::where('userName', $request->userName)->update(array(
-                    'profileImg' => file_get_contents($file->base64_image),
+                    'profileImg' => $compPic,
                 ));
             }
         } catch (\Throwable $th) {
