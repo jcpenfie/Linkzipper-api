@@ -5,14 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use Illuminate\Support\Facades\File;
+use Aws\S3\S3Client;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     public function panel(Request $request)
     {
+        $s3 = new S3Client([
+            'version'  => '2006-03-01',
+            'region'   => 'us-east-1',
+        ]);
+        $bucket = getenv('S3_BUCKET') ?: die('No "S3_BUCKET" config var in found in env!');
+
+
+
         try {
             $validateData = $request->validate([
                 'userName' => 'required',
@@ -49,7 +56,7 @@ class UserController extends Controller
                 //Nombre final de la imagen: quita todos los posibles espacios por guión bajos que tenga en el nombre, le añade un número random, la hora en milisegundos para que no se repita y la extensión de la imagen
                 $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extenshion;
 
-                $request->file('profileImg')->move('img/logo', $compPic);
+                $upload = $s3->upload($bucket, $completeFileName, fopen($compPic, 'rb'), 'public-read');
                 User::where('userName', $request->userName)->update(array(
                     'profileImg' => $compPic,
                 ));
@@ -86,12 +93,12 @@ class UserController extends Controller
 
     public function imgProfile($imgName)
     {
-        $path = public_path().'/img/logo/'.$imgName;
-        return Response::download($path);        
+        $path = public_path() . '/img/logo/' . $imgName;
+        return Response::download($path);
     }
     public function imgBg($imgName)
     {
-        $path = public_path().'/img/bg/'.$imgName;
-        return Response::download($path);        
+        $path = public_path() . '/img/bg/' . $imgName;
+        return Response::download($path);
     }
 }
