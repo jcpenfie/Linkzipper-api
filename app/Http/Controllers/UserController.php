@@ -50,8 +50,11 @@ class UserController extends Controller
                 $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extenshion;
 
                 $request->file('profileImg')->storeAs('img/logo', $compPic);
+
+                $file = $request->file('profileImg');
+                
                 User::where('userName', $request->userName)->update(array(
-                    'profileImg' => $compPic,
+                    'profileImg' => file_get_contents($file->base64_image),
                 ));
             }
         } catch (\Throwable $th) {
