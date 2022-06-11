@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Aws\S3\S3Client;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -56,7 +57,7 @@ class UserController extends Controller
                 //Nombre final de la imagen: quita todos los posibles espacios por guión bajos que tenga en el nombre, le añade un número random, la hora en milisegundos para que no se repita y la extensión de la imagen
                 $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extenshion;
 
-                $upload = $s3->upload($bucket, $compPic, fopen($completeFileName, 'rb'), 'public-read');
+                $ruta = Storage::disk('s3')->put("logo", $request->file('profileImg'), 'public');
                 User::where('userName', $request->userName)->update(array(
                     'profileImg' => $compPic,
                 ));
