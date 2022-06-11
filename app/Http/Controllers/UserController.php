@@ -57,7 +57,7 @@ class UserController extends Controller
                 //Nombre final de la imagen: quita todos los posibles espacios por guión bajos que tenga en el nombre, le añade un número random, la hora en milisegundos para que no se repita y la extensión de la imagen
                 $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extenshion;
 
-                $ruta = Storage::disk('s3')->put("logo", $request->file('profileImg'), 'public');
+                $ruta = Storage::disk('s3')->put("logo", $request->profileImg, 'public');
                 User::where('userName', $request->userName)->update(array(
                     'profileImg' => $compPic,
                 ));
