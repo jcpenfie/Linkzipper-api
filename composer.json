@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.0.2 || 7.4.29",
         "aws/aws-sdk-php": "~3.0",
+        "barryvdh/laravel-cors": "^3.0",
         "crazybooot/base64-validation": "^1.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.11",
