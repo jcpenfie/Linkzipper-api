@@ -68,8 +68,7 @@ class UserController extends Controller
                 //Nombre final de la imagen: quita todos los posibles espacios por guión bajos que tenga en el nombre, le añade un número random, la hora en milisegundos para que no se repita y la extensión de la imagen
                 $compPic = str_replace(' ', '_', $fileNameOnly) . '-' . rand() . '_' . time() . '.' . $extenshion;
 
-                // $request->file('backgroundImg')->move('img/bg', $compPic);
-                Storage::disk('s3')->put('img/bg',$request->file('backgroundImg'));
+                $request->file('backgroundImg')->move('img/bg', $compPic);
                 User::where('userName', $request->userName)->update(array(
                     'backgroundImg' => $compPic,
                 ));

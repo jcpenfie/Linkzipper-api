@@ -21,42 +21,51 @@ class AuthController extends Controller
             ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => 'The user name or email has already been taken.',
+                'message' => 'Validation Fail',
                 'error_type' => '422',
             ]);
         }
-        $user = User::create([
-            'userName' => strtolower($validateData['userName']),
-            'showName' => $validateData['userName'],
-            'email' => strtolower($validateData['email']),
-            'password' => Hash::make($validateData['password']),
-            'totalLikes' => 0,
-            'publicAccount' => 1,
-            'theme' => 'white',
-            'description' => ' ',
-            'profileImg' => 'profileInput.png',
-            'backgroundImg' => 'emptyBg.png'
-        ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        if (User::where('userName', $validateData['userName']) || User::where('email', $validateData['email'])) {
+
+            return response()->json([
+                'message' => 'The user name or email has already been taken.',
+                'error_type' => '422',
+            ]);
+        } else {
+            $user = User::create([
+                'userName' => strtolower($validateData['userName']),
+                'showName' => $validateData['userName'],
+                'email' => strtolower($validateData['email']),
+                'password' => Hash::make($validateData['password']),
+                'totalLikes' => 0,
+                'publicAccount' => 1,
+                'theme' => 'white',
+                'description' => ' ',
+                'profileImg' => 'profileInput.png',
+                'backgroundImg' => 'emptyBg.png'
+            ]);
+
+            $token = $user->createToken('auth_token')->plainTextToken;
 
 
 
-        //AutoLike al registrase un usuario
-        $userL = User::where('userName',$user->userName)->get();
+            //AutoLike al registrase un usuario
+            $userL = User::where('userName', $user->userName)->get();
 
-        Like::create([
-            'idUser' => $userL[0]->id,
-            'idUserLiked' => $userL[0]->id,
-        ]);
+            Like::create([
+                'idUser' => $userL[0]->id,
+                'idUserLiked' => $userL[0]->id,
+            ]);
 
-        DB::table('users')->where('id', $userL[0]->id)->increment('totalLikes');
+            DB::table('users')->where('id', $userL[0]->id)->increment('totalLikes');
 
-        return response()->json([
-            'message' => 'Good',
-            'access_token' => $token,
-            'token_type' => 'Bearer'
-        ], 200);
+            return response()->json([
+                'message' => 'Good',
+                'access_token' => $token,
+                'token_type' => 'Bearer'
+            ], 200);
+        }
     }
 
     public function login(Request $request)
