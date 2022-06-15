@@ -29,7 +29,7 @@ class AuthController extends Controller
         $userName = User::where('userName', $validateData['userName'])->get();
         $email = User::where('email', $validateData['email'])->get();
 
-        if ($email != null || $userName != null) {
+        if (strlen($email) || strlen($userName)) {
 
             return response()->json([
                 'message' => 'The user name or email has already been taken.',
