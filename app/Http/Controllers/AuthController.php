@@ -31,6 +31,8 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'The user name or email has already been taken.',
                 'error_type' => '422',
+                'result' => User::where('email', $validateData['email']),
+                'result2' => User::where('userName', $validateData['userName']),
             ]);
         } else {
             $user = User::create([
