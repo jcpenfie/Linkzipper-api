@@ -34,8 +34,6 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'The user name or email has already been taken.',
                 'error_type' => '422',
-                'result' => $userName,
-                'result2' => $email,
             ]);
         } else {
             $user = User::create([
