@@ -26,13 +26,16 @@ class AuthController extends Controller
             ]);
         }
 
-        if (User::where('userName', $validateData['userName']) || User::where('email', $validateData['email'])) {
+        $userName = User::where('userName', $validateData['userName'])->get();
+        $email = User::where('email', $validateData['email'])->get();
+
+        if ($email != null || $userName != null) {
 
             return response()->json([
                 'message' => 'The user name or email has already been taken.',
                 'error_type' => '422',
-                'result' => User::where('email', $validateData['email']),
-                'result2' => User::where('userName', $validateData['userName']),
+                'result' => $userName,
+                'result2' => $email,
             ]);
         } else {
             $user = User::create([
